@@ -1,8 +1,18 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import './Navbar.css'
 
 function Navbar() {
     const location = useLocation()
+    const navigate = useNavigate()
+    const { user, logout } = useAuth()
+
+    const handleLogout = async () => {
+        const result = await logout()
+        if (result.success) {
+            navigate('/login')
+        }
+    }
 
     return (
         <nav className="navbar">
@@ -33,10 +43,26 @@ function Navbar() {
                 </div>
 
                 <div className="navbar-actions">
-                    <Link to="/login" className="nav-cta">
-                        <span className="cta-icon">▶</span>
-                        Start Free
-                    </Link>
+                    {user ? (
+                        <div className="user-profile">
+                            {user.photoURL && (
+                                <img
+                                    src={user.photoURL}
+                                    alt={user.displayName}
+                                    className="user-avatar"
+                                />
+                            )}
+                            <span className="user-name">{user.displayName || user.email}</span>
+                            <button onClick={handleLogout} className="logout-btn">
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <Link to="/login" className="nav-cta">
+                            <span className="cta-icon">▶</span>
+                            Start Free
+                        </Link>
+                    )}
                 </div>
             </div>
         </nav>

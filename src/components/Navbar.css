@@ -148,3 +148,47 @@
         font-size: 0.75rem;
     }
 }
+
+/* User Profile */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-md);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent-cyan);
+}
+
+.user-name {
+    font-size: 0.75rem;
+    color: var(--color-text-primary);
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.logout-btn {
+    padding: var(--space-xs) var(--space-sm);
+    font-family: var(--font-pixel);
+    font-size: 0.5rem;
+    color: var(--color-accent-magenta);
+    background: transparent;
+    border: 1px solid var(--color-accent-magenta);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.logout-btn:hover {
+    background: rgba(241, 91, 181, 0.1);
+    transform: translateY(-1px);
+}
