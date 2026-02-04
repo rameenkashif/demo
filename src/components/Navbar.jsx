@@ -33,7 +33,7 @@ function Navbar() {
                 </div>
 
                 <div className="navbar-actions">
-                    <Link to="/analyze" className="nav-cta">
+                    <Link to="/login" className="nav-cta">
                         <span className="cta-icon">▶</span>
                         Start Free
                     </Link>

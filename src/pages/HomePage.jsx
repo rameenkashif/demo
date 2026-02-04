@@ -59,12 +59,12 @@ function HomePage() {
                     </p>
 
                     <div className="hero-actions">
-                        <Link to="/analyze">
+                        <Link to="/login">
                             <PixelButton size="large">
                                 Analyze Your Video
                             </PixelButton>
                         </Link>
-                        <Link to="/analyze">
+                        <Link to="/login">
                             <PixelButton variant="ghost" size="large">
                                 See Demo
                             </PixelButton>
@@ -151,7 +151,7 @@ function HomePage() {
                     <div className="cta-content">
                         <h2>Ready to Level Up?</h2>
                         <p>Start analyzing your videos and get AI-powered feedback in seconds.</p>
-                        <Link to="/analyze">
+                        <Link to="/login">
                             <PixelButton variant="secondary" size="large">
                                 Get Started Free
                             </PixelButton>
