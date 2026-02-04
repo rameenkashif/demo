@@ -7,6 +7,7 @@ import {
     onAuthStateChanged
 } from 'firebase/auth';
 import firebaseConfig from '../config/firebase.config';
+import { createOrUpdateUser } from './supabase';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -21,6 +22,19 @@ googleProvider.addScope('profile');
 export const signInWithGoogle = async () => {
     try {
         const result = await signInWithPopup(auth, googleProvider);
+
+        // Save user to Supabase database
+        const supabaseResult = await createOrUpdateUser({
+            uid: result.user.uid,
+            email: result.user.email,
+            displayName: result.user.displayName,
+            photoURL: result.user.photoURL
+        });
+
+        if (!supabaseResult.success) {
+            console.error('Failed to save user to Supabase:', supabaseResult.error);
+        }
+
         return {
             success: true,
             user: {
