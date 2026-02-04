@@ -1,0 +1,138 @@
+.pixel-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-family: var(--font-pixel);
+    font-size: 0.625rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all var(--transition-normal);
+}
+
+/* Sizes */
+.pixel-button.small {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.5rem;
+}
+
+.pixel-button.medium {
+    padding: var(--space-md) var(--space-xl);
+    font-size: 0.625rem;
+}
+
+.pixel-button.large {
+    padding: var(--space-lg) var(--space-2xl);
+    font-size: 0.75rem;
+}
+
+.pixel-button.full-width {
+    width: 100%;
+}
+
+/* Primary Variant */
+.pixel-button.primary {
+    background: linear-gradient(135deg, var(--color-accent-cyan), var(--color-accent-blue));
+    color: var(--color-bg-primary);
+    box-shadow:
+        0 4px 0 rgba(0, 100, 120, 0.8),
+        0 6px 20px rgba(0, 245, 212, 0.3);
+}
+
+.pixel-button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 6px 0 rgba(0, 100, 120, 0.8),
+        0 10px 30px rgba(0, 245, 212, 0.4);
+}
+
+.pixel-button.primary:active {
+    transform: translateY(2px);
+    box-shadow:
+        0 2px 0 rgba(0, 100, 120, 0.8),
+        0 4px 10px rgba(0, 245, 212, 0.2);
+}
+
+/* Secondary Variant */
+.pixel-button.secondary {
+    background: linear-gradient(135deg, var(--color-accent-magenta), var(--color-accent-purple));
+    color: var(--color-text-primary);
+    box-shadow:
+        0 4px 0 rgba(100, 40, 100, 0.8),
+        0 6px 20px rgba(241, 91, 181, 0.3);
+}
+
+.pixel-button.secondary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 6px 0 rgba(100, 40, 100, 0.8),
+        0 10px 30px rgba(241, 91, 181, 0.4);
+}
+
+.pixel-button.secondary:active {
+    transform: translateY(2px);
+    box-shadow:
+        0 2px 0 rgba(100, 40, 100, 0.8),
+        0 4px 10px rgba(241, 91, 181, 0.2);
+}
+
+/* Ghost Variant */
+.pixel-button.ghost {
+    background: transparent;
+    color: var(--color-accent-cyan);
+    border: 2px solid var(--color-accent-cyan);
+    box-shadow: 0 0 0 transparent;
+}
+
+.pixel-button.ghost:hover {
+    background: rgba(0, 245, 212, 0.1);
+    box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
+    transform: translateY(-2px);
+}
+
+.pixel-button.ghost:active {
+    transform: translateY(0);
+}
+
+/* Disabled State */
+.pixel-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Button Shine Effect */
+.button-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transition: left 0.5s ease;
+}
+
+.pixel-button:hover .button-shine {
+    left: 100%;
+}
+
+/* Icon */
+.button-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em;
+}
+
+.button-text {
+    position: relative;
+    z-index: 1;
+}

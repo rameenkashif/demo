@@ -1,0 +1,160 @@
+.score-gauge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+/* Gauge Circle */
+.gauge-circle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-gauge.small .gauge-circle {
+    width: 80px;
+    height: 80px;
+}
+
+.score-gauge.medium .gauge-circle {
+    width: 120px;
+    height: 120px;
+}
+
+.score-gauge.large .gauge-circle {
+    width: 160px;
+    height: 160px;
+}
+
+.gauge-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.gauge-bg {
+    color: var(--color-bg-tertiary);
+}
+
+.gauge-progress {
+    transition: stroke-dashoffset 1s ease-out;
+}
+
+/* Color variants */
+.score-gauge.excellent .gauge-progress {
+    color: var(--color-score-excellent);
+}
+
+.score-gauge.good .gauge-progress {
+    color: var(--color-score-good);
+}
+
+.score-gauge.average .gauge-progress {
+    color: var(--color-score-average);
+}
+
+.score-gauge.poor .gauge-progress {
+    color: var(--color-score-poor);
+}
+
+.score-gauge.critical .gauge-progress {
+    color: var(--color-score-critical);
+}
+
+/* Content inside circle */
+.gauge-content {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.gauge-icon {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.score-gauge.small .gauge-icon {
+    font-size: 0.75rem;
+}
+
+.score-gauge.large .gauge-icon {
+    font-size: 1.25rem;
+}
+
+.gauge-score {
+    font-family: var(--font-pixel);
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+}
+
+.score-gauge.small .gauge-score {
+    font-size: 1rem;
+}
+
+.score-gauge.large .gauge-score {
+    font-size: 2rem;
+}
+
+/* Info section */
+.gauge-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    text-align: center;
+}
+
+.gauge-label {
+    font-family: var(--font-pixel);
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.05em;
+}
+
+.score-gauge.large .gauge-label {
+    font-size: 0.625rem;
+}
+
+.gauge-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.gauge-status.excellent {
+    color: var(--color-score-excellent);
+}
+
+.gauge-status.good {
+    color: var(--color-score-good);
+}
+
+.gauge-status.average {
+    color: var(--color-score-average);
+}
+
+.gauge-status.poor {
+    color: var(--color-score-poor);
+}
+
+.gauge-status.critical {
+    color: var(--color-score-critical);
+}
+
+.gauge-description {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    max-width: 150px;
+}
+
+/* Glow effect for high scores */
+.score-gauge.excellent .gauge-circle {
+    filter: drop-shadow(0 0 10px rgba(0, 245, 212, 0.3));
+}

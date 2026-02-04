@@ -1,0 +1,78 @@
+.pixel-card {
+    position: relative;
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-normal);
+}
+
+.card-border {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+            rgba(0, 245, 212, 0.2),
+            rgba(155, 93, 229, 0.2),
+            rgba(241, 91, 181, 0.2));
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.card-content {
+    position: relative;
+    padding: var(--space-xl);
+    z-index: 1;
+}
+
+/* Hover Effect */
+.pixel-card.hoverable:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.pixel-card.hoverable:hover .card-border {
+    background: linear-gradient(135deg,
+            rgba(0, 245, 212, 0.5),
+            rgba(155, 93, 229, 0.5),
+            rgba(241, 91, 181, 0.5));
+}
+
+/* Glow Variant */
+.pixel-card.glow {
+    box-shadow:
+        0 0 30px rgba(0, 245, 212, 0.1),
+        0 0 60px rgba(155, 93, 229, 0.05);
+}
+
+.pixel-card.glow:hover {
+    box-shadow:
+        0 0 40px rgba(0, 245, 212, 0.2),
+        0 0 80px rgba(155, 93, 229, 0.1),
+        0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Variant: Accent */
+.pixel-card.accent .card-border {
+    background: linear-gradient(135deg,
+            var(--color-accent-cyan),
+            var(--color-accent-purple));
+}
+
+/* Variant: Subtle */
+.pixel-card.subtle {
+    background: var(--color-bg-secondary);
+}
+
+.pixel-card.subtle .card-border {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Clickable */
+.pixel-card[onClick] {
+    cursor: pointer;
+}
