@@ -3,6 +3,11 @@ node_modules/
 .pnp
 .pnp.js
 
+# Environment (keep credentials secret!)
+.env
+.env.local
+.pnp.js
+
 # Build output
 dist/
 build/

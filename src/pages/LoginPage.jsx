@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import PixelCard from '../components/PixelCard'
 import './LoginPage.css'
 
@@ -7,32 +8,38 @@ function LoginPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(null)
     const navigate = useNavigate()
+    const { login, user } = useAuth()
+
+    // Redirect if already logged in
+    if (user) {
+        return <Navigate to="/analyze" replace />
+    }
 
     const handleGoogleSignIn = async () => {
         setIsLoading(true)
         setError(null)
 
-        try {
-            // Simulate Google OAuth flow for demo
-            // In production, this would use Firebase Auth or similar
-            await new Promise(resolve => setTimeout(resolve, 1500))
+        const result = await login()
 
-            // Store demo user in localStorage
-            const demoUser = {
-                id: 'demo_user_123',
-                name: 'Demo Creator',
-                email: 'demo@pixelcreator.ai',
-                avatar: null,
-                createdAt: new Date().toISOString()
-            }
-            localStorage.setItem('pixelai_user', JSON.stringify(demoUser))
-
-            // Navigate to analyze page
+        if (result.success) {
             navigate('/analyze')
-        } catch (err) {
-            setError('Sign in failed. Please try again.')
+        } else {
+            setError(result.error)
             setIsLoading(false)
         }
+    }
+
+    const handleDemoMode = () => {
+        // Store demo user in localStorage for demo mode
+        const demoUser = {
+            uid: 'demo_user_123',
+            displayName: 'Demo Creator',
+            email: 'demo@pixelcreator.ai',
+            photoURL: null,
+            isDemo: true
+        }
+        localStorage.setItem('pixelai_demo_user', JSON.stringify(demoUser))
+        navigate('/analyze')
     }
 
     return (
@@ -98,7 +105,7 @@ function LoginPage() {
                     {/* Demo Mode */}
                     <button
                         className="demo-btn"
-                        onClick={() => navigate('/analyze')}
+                        onClick={handleDemoMode}
                     >
                         <span className="demo-icon">▶</span>
                         <span>Try Demo Mode</span>
