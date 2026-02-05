@@ -17,8 +17,8 @@ export async function analyzeVideo(videoFile, platform = 'tiktok') {
         // Convert video file to base64
         const videoData = await fileToGenerativePart(videoFile);
 
-        // Get the Gemini model (using Gemini 1.5 Pro for video analysis)
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+        // Get the Gemini model (using Gemini Pro Vision for video analysis)
+        const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
 
         // Create comprehensive analysis prompt
         const prompt = createAnalysisPrompt(platform, videoFile.name);
