@@ -1,102 +1,170 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import Navbar from '../components/Navbar'
 import VideoUploader from '../components/VideoUploader'
-import PixelButton from '../components/PixelButton'
+import { analyzeVideo } from '../services/gemini'
+import { saveVideoAnalysis } from '../services/supabase'
 import './AnalyzePage.css'
 
 function AnalyzePage() {
-    const [uploadedFile, setUploadedFile] = useState(null)
-    const [isProcessing, setIsProcessing] = useState(false)
-    const [selectedPlatform, setSelectedPlatform] = useState('tiktok')
     const navigate = useNavigate()
+    const { user } = useAuth()
+    const [selectedPlatform, setSelectedPlatform] = useState('tiktok')
+    const [uploadedVideo, setUploadedVideo] = useState(null)
+    const [isAnalyzing, setIsAnalyzing] = useState(false)
+    const [analysisProgress, setAnalysisProgress] = useState(0)
+    const [errorMessage, setErrorMessage] = useState('')
 
     const platforms = [
-        { id: 'tiktok', name: 'TikTok', icon: '📱' },
-        { id: 'reels', name: 'Reels', icon: '📸' },
-        { id: 'shorts', name: 'Shorts', icon: '▶️' }
+        { id: 'tiktok', name: 'TikTok', icon: '🎵' },
+        { id: 'reels', name: 'Instagram Reels', icon: '📸' },
+        { id: 'shorts', name: 'YouTube Shorts', icon: '▶️' }
     ]
 
-    const handleUpload = (file) => {
-        setUploadedFile(file)
+    const handleVideoUpload = (file) => {
+        setUploadedVideo(file)
+        setErrorMessage('')
     }
 
-    const handleAnalyze = () => {
-        if (!uploadedFile) return
+    const handleAnalyze = async () => {
+        if (!uploadedVideo) {
+            setErrorMessage('Please upload a video first')
+            return
+        }
 
-        setIsProcessing(true)
+        setIsAnalyzing(true)
+        setAnalysisProgress(10)
+        setErrorMessage('')
 
-        // Simulate AI processing time
-        setTimeout(() => {
-            navigate('/results')
-        }, 3000)
+        try {
+            // Progress: Preparing video
+            setAnalysisProgress(20)
+            console.log('📤 Uploading video to AI...')
+
+            // Progress: Analyzing with AI
+            setAnalysisProgress(40)
+            const aiResult = await analyzeVideo(uploadedVideo, selectedPlatform)
+
+            if (!aiResult.success) {
+                throw new Error(aiResult.error || 'AI analysis failed')
+            }
+
+            // Progress: Processing results
+            setAnalysisProgress(70)
+            console.log('💾 Saving analysis to database...')
+
+            // Save to Supabase if user is logged in
+            if (user) {
+                const saveResult = await saveVideoAnalysis({
+                    firebaseUid: user.uid,
+                    videoTitle: uploadedVideo.name,
+                    platform: selectedPlatform,
+                    analysisData: aiResult.data
+                })
+
+                if (!saveResult.success) {
+                    console.warn('Failed to save to database:', saveResult.error)
+                }
+            }
+
+            // Progress: Complete
+            setAnalysisProgress(100)
+            console.log('✅ Analysis complete!')
+
+            // Navigate to results with the analysis data
+            setTimeout(() => {
+                navigate('/results', {
+                    state: {
+                        analysis: aiResult.data,
+                        videoName: uploadedVideo.name
+                    }
+                })
+            }, 500)
+
+        } catch (error) {
+            console.error('Analysis error:', error)
+            setErrorMessage(error.message || 'Failed to analyze video. Please try again.')
+            setIsAnalyzing(false)
+            setAnalysisProgress(0)
+        }
     }
 
     return (
         <div className="analyze-page">
+            <Navbar />
+
             <div className="analyze-container">
-                <header className="analyze-header">
-                    <h1>Analyze Your Video</h1>
-                    <p>Upload your short-form video and get AI-powered feedback in seconds</p>
-                </header>
-
-                <div className="analyze-content">
-                    <div className="upload-section">
-                        <VideoUploader
-                            onUpload={handleUpload}
-                            isProcessing={isProcessing}
-                        />
-                    </div>
-
-                    {uploadedFile && !isProcessing && (
-                        <div className="options-section animate-slideUp">
-                            <div className="platform-selector">
-                                <h3>Select Platform</h3>
-                                <div className="platform-options">
-                                    {platforms.map(platform => (
-                                        <button
-                                            key={platform.id}
-                                            className={`platform-option ${selectedPlatform === platform.id ? 'active' : ''}`}
-                                            onClick={() => setSelectedPlatform(platform.id)}
-                                        >
-                                            <span className="platform-icon">{platform.icon}</span>
-                                            <span className="platform-name">{platform.name}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="analyze-action">
-                                <PixelButton
-                                    size="large"
-                                    fullWidth
-                                    onClick={handleAnalyze}
-                                >
-                                    ⚡ Analyze Now
-                                </PixelButton>
-                                <p className="analyze-hint">
-                                    AI will score hooks, retention, CTAs, SEO, and trends
-                                </p>
-                            </div>
-                        </div>
-                    )}
+                <div className="analyze-header">
+                    <h1 className="analyze-title">
+                        Upload & <span className="gradient-text">Analyze</span>
+                    </h1>
+                    <p className="analyze-subtitle">
+                        Get AI-powered insights to level up your content
+                    </p>
                 </div>
 
-                <div className="analyze-features">
-                    <div className="feature-tag">
-                        <span className="tag-icon">🎯</span>
-                        <span>Hook Analysis</span>
+                <div className="analyze-content">
+                    <div className="platform-selector">
+                        <label className="platform-label">Target Platform</label>
+                        <div className="platform-options">
+                            {platforms.map(platform => (
+                                <button
+                                    key={platform.id}
+                                    className={`platform-option ${selectedPlatform === platform.id ? 'active' : ''}`}
+                                    onClick={() => setSelectedPlatform(platform.id)}
+                                    disabled={isAnalyzing}
+                                >
+                                    <span className="platform-icon">{platform.icon}</span>
+                                    <span className="platform-name">{platform.name}</span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                    <div className="feature-tag">
-                        <span className="tag-icon">📊</span>
-                        <span>Retention Mapping</span>
+
+                    <VideoUploader
+                        onVideoUpload={handleVideoUpload}
+                        disabled={isAnalyzing}
+                    />
+
+                    {errorMessage && (
+                        <div className="error-message">
+                            <span className="error-icon">⚠️</span>
+                            {errorMessage}
+                        </div>
+                    )}
+
+                    {isAnalyzing && (
+                        <div className="analysis-progress">
+                            <div className="progress-bar">
+                                <div
+                                    className="progress-fill"
+                                    style={{ width: `${analysisProgress}%` }}
+                                />
+                            </div>
+                            <p className="progress-text">
+                                {analysisProgress < 30 && '🎬 Preparing video...'}
+                                {analysisProgress >= 30 && analysisProgress < 70 && '🤖 AI analyzing content...'}
+                                {analysisProgress >= 70 && analysisProgress < 100 && '💾 Saving results...'}
+                                {analysisProgress === 100 && '✅ Complete!'}
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="analyze-actions">
+                        <button
+                            className="analyze-btn"
+                            onClick={handleAnalyze}
+                            disabled={!uploadedVideo || isAnalyzing}
+                        >
+                            {isAnalyzing ? '⏳ Analyzing...' : '🚀 Analyze Video'}
+                        </button>
                     </div>
-                    <div className="feature-tag">
-                        <span className="tag-icon">✨</span>
-                        <span>AI Suggestions</span>
-                    </div>
-                    <div className="feature-tag">
-                        <span className="tag-icon">🔍</span>
-                        <span>SEO Optimization</span>
+
+                    <div className="feature-tags">
+                        <span className="feature-tag">✨ AI-Powered</span>
+                        <span className="feature-tag">⚡ Real-time Analysis</span>
+                        <span className="feature-tag">🎯 Actionable Insights</span>
                     </div>
                 </div>
             </div>
