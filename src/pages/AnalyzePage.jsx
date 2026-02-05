@@ -37,95 +37,45 @@ function AnalyzePage() {
         setErrorMessage('')
 
         try {
-            // Simulate AI analysis with mock data
+            // Progress: Preparing video
             setAnalysisProgress(20)
-            console.log('📤 Simulating AI analysis...')
+            console.log('📤 Preparing video for AI analysis...')
 
-            // Simulate processing time
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            setAnalysisProgress(50)
+            // Progress: Analyzing with Eden AI
+            setAnalysisProgress(40)
+            const aiResult = await analyzeVideo(uploadedVideo, selectedPlatform)
 
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            setAnalysisProgress(80)
-
-            // Create mock analysis data
-            const mockAnalysis = {
-                videoTitle: uploadedVideo.name,
-                platform: selectedPlatform,
-                scores: {
-                    hookStrength: 75,
-                    retentionRisk: 68,
-                    ctaEffectiveness: 82,
-                    seoDiscoverability: 71,
-                    trendRelevance: 79
-                },
-                feedback: [
-                    {
-                        timestamp: '0:00-0:03',
-                        severity: 'warning',
-                        message: 'Opening could be stronger',
-                        suggestion: 'Start with a bold statement or question to hook viewers immediately'
-                    },
-                    {
-                        timestamp: '0:05-0:08',
-                        severity: 'info',
-                        message: 'Good visual variety',
-                        suggestion: 'Continue using dynamic shots to maintain engagement'
-                    }
-                ],
-                hookSuggestions: [
-                    {
-                        original: 'Current video opening',
-                        rewrite: 'Want to know the secret that changed everything?',
-                        style: 'question',
-                        confidence: 88
-                    },
-                    {
-                        original: 'Current video opening',
-                        rewrite: 'This is what nobody tells you about...',
-                        style: 'curiosity',
-                        confidence: 85
-                    }
-                ],
-                ctaSuggestions: [
-                    {
-                        timing: 'mid',
-                        message: 'Follow for more tips like this',
-                        effectiveness: 78
-                    }
-                ],
-                captionOptimization: {
-                    current: uploadedVideo.name.replace(/\.[^/.]+$/, ''),
-                    optimized: `${selectedPlatform} content that will boost your engagement! 🚀 Click to see the full strategy`,
-                    keywords: ['growth', 'viral', 'engagement', selectedPlatform],
-                    hashtags: {
-                        trending: ['#viral', '#fyp', '#trending'],
-                        niche: [`#${selectedPlatform}tips`, '#contentcreator'],
-                        branded: ['#pixelcreatorai']
-                    }
-                },
-                summary: 'Strong foundation with room for improvement in the hook and CTA placement.',
-                analyzedAt: new Date().toISOString()
+            if (!aiResult.success) {
+                throw new Error(aiResult.error || 'AI analysis failed')
             }
 
-            setAnalysisProgress(100)
-            console.log('✅ Mock analysis complete!')
+            // Progress: Processing results
+            setAnalysisProgress(70)
+            console.log('💾 Saving analysis to database...')
 
-            // Save to database if user is logged in
+            // Save to Supabase if user is logged in
             if (user) {
-                await saveVideoAnalysis({
+                const saveResult = await saveVideoAnalysis({
                     firebaseUid: user.uid,
                     videoTitle: uploadedVideo.name,
                     platform: selectedPlatform,
-                    analysisData: mockAnalysis
+                    analysisData: aiResult.data
                 })
+
+                if (!saveResult.success) {
+                    console.warn('Failed to save to database:', saveResult.error)
+                }
             }
 
-            // Navigate to results
+            // Progress: Complete
+            setAnalysisProgress(100)
+            console.log('✅ Analysis complete!')
+
+            // Navigate to results with the analysis data
             setTimeout(() => {
                 navigate('/results', {
                     state: {
-                        analysis: mockAnalysis,
+                        analysis: aiResult.data,
                         videoName: uploadedVideo.name
                     }
                 })
