@@ -1,6 +1,11 @@
 // Gemini AI configuration
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+// Debug: Check if API key is loaded
+console.log('🔑 Gemini API Key Status:', apiKey ? `Loaded (${apiKey.substring(0, 10)}...)` : '❌ MISSING');
+
 const geminiConfig = {
-    apiKey: import.meta.env.VITE_GEMINI_API_KEY || ""
+    apiKey: apiKey || ""
 };
 
 // Validate environment variable
