@@ -98,22 +98,33 @@ export async function analyzeVideo(videoFile, platform = 'tiktok') {
 async function analyzeFrame(base64Frame, frameIndex) {
     const url = `${edenaiConfig.baseUrl}/image/object_detection`;
 
+    // Convert base64 to blob for proper file upload
+    const byteCharacters = atob(base64Frame);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'image/jpeg' });
+
+    // Create form data
+    const formData = new FormData();
+    formData.append('providers', 'google');
+    formData.append('file', blob, 'frame.jpg');
+    formData.append('attributes_as_list', 'false');
+    formData.append('show_original_response', 'false');
+
     const response = await fetch(url, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${edenaiConfig.apiKey}`,
-            'Content-Type': 'application/json'
+            'Authorization': `Bearer ${edenaiConfig.apiKey}`
         },
-        body: JSON.stringify({
-            providers: 'google',
-            file: base64Frame,
-            file_url: '',
-            attributes_as_list: false,
-            show_original_response: false
-        })
+        body: formData
     });
 
     if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Eden AI error response:', errorText);
         throw new Error(`Eden AI API error: ${response.status}`);
     }
 
