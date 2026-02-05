@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import VideoUploader from '../components/VideoUploader'
-import { analyzeVideo } from '../services/gemini'
+import { analyzeVideo } from '../services/openai'
 import { saveVideoAnalysis } from '../services/supabase'
 import './AnalyzePage.css'
 
