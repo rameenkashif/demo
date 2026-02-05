@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import Navbar from '../components/Navbar'
 import PixelCard from '../components/PixelCard'
 import PixelButton from '../components/PixelButton'
 import ScoreGauge from '../components/ScoreGauge'
@@ -42,8 +41,6 @@ function ResultsPage() {
 
     return (
         <div className="results-page">
-            <Navbar />
-
             <header className="results-header">
                 <div className="header-content">
                     <Link to="/analyze" className="back-link">← Back to Upload</Link>

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import Navbar from '../components/Navbar'
 import VideoUploader from '../components/VideoUploader'
 import { analyzeVideo } from '../services/gemini'
 import { saveVideoAnalysis } from '../services/supabase'
@@ -92,8 +91,6 @@ function AnalyzePage() {
 
     return (
         <div className="analyze-page">
-            <Navbar />
-
             <div className="analyze-container">
                 <div className="analyze-header">
                     <h1 className="analyze-title">
@@ -123,7 +120,7 @@ function AnalyzePage() {
                     </div>
 
                     <VideoUploader
-                        onVideoUpload={handleVideoUpload}
+                        onUpload={handleVideoUpload}
                         disabled={isAnalyzing}
                     />
 
